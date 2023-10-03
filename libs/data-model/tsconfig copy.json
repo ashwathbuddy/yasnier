@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    // "noEmit": true,
+    // "sourceMap": false,
+    "preserveConstEnums": true
+  },
+  "ts-node": {
+    "esm": true
+  },
+  "exclude": ["**/*.test.ts", "**/*.spec.ts"]
+}

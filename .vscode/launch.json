@@ -1,0 +1,137 @@
+{
+  "configurations": [
+    {
+      "name": "Launch Chrome",
+      "request": "launch",
+      "type": "chrome",
+      "url": "http://localhost:4200",
+      "webRoot": "${workspaceFolder}/src/ui",
+      "skipFiles": ["${workspaceFolder}/node_modules/**/*.js", "${workspaceFolder}/lib/**/*.js"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Dynamo setup program",
+      "program": "${workspaceFolder}/libs/data-model/src/setup.ts",
+      "preLaunchTask": "tsc: build data model",
+      "outFiles": ["${workspaceFolder}/libs/data-model/dist/**/*.js"]
+    },
+    {
+      "type": "msedge",
+      "request": "launch",
+      "name": "Launch Edge against localhost",
+      "url": "http://localhost:4200",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Attach to SAM CLI",
+      "type": "node",
+      "request": "attach",
+      "address": "localhost",
+      "port": 9999,
+      "localRoot": "${workspaceRoot}/src/api/monitor/.aws-sam/build/GetMeterDataFunction",
+      "remoteRoot": "/var/task",
+      "outFiles": ["${workspaceRoot}/src/api/monitor/.aws-sam/build/GetMeterDataFunction"],
+      "sourceMaps": true
+    },
+    {
+      "name": "Attach to SAM CLI (getDevicesFunction)",
+      "type": "node",
+      "request": "attach",
+      "address": "localhost",
+      "port": 9999,
+      "localRoot": "${workspaceRoot}/src/api/.aws-sam/build/getDevicesFunction",
+      "remoteRoot": "/var/task",
+      "outFiles": ["${workspaceRoot}/src/api/.aws-sam/build/getDevicesFunction"],
+      "sourceMaps": true
+    },
+    {
+      "type": "aws-sam",
+      "request": "direct-invoke",
+      "name": "api:LoginFunction",
+      "invokeTarget": {
+        "target": "template",
+        "templatePath": "${workspaceFolder}/src/api/template.yml",
+        "logicalId": "LoginFunction"
+      },
+      "lambda": {
+        "payload": {},
+        "environmentVariables": {}
+      }
+    },
+    {
+      "type": "aws-sam",
+      "request": "direct-invoke",
+      "name": "Invoke Lambda",
+      "invokeTarget": {
+        "target": "code",
+        "lambdaHandler": "loginHandler",
+        "projectRoot": "${workspaceFolder}/src/api/account/"
+      },
+      "lambda": {
+        "runtime": "nodejs18.x"
+      },
+      "sam": {
+        "containerBuild": false,
+        "skipNewImageCheck": false
+      },
+      "api": {
+        "path": "/api/login",
+        "httpMethod": "get"
+      }
+    },
+    {
+      "type": "aws-sam",
+      "request": "direct-invoke",
+      "name": "Debug:LoginFunction",
+      "invokeTarget": {
+        "target": "template",
+        "logicalId": "LoginFunction",
+        "templatePath": "${workspaceFolder}/src/api/account/template.yml"
+      },
+      "lambda": {
+        "runtime": "nodejs18.x",
+        "payload": {
+          "json": {
+            "username": "Sergio",
+            "password": "123456"
+          }
+        },
+        "environmentVariables": {}
+      },
+      "sam": {
+        "containerBuild": false,
+        "skipNewImageCheck": false
+      },
+      "api": {
+        "path": "/api/account",
+        "httpMethod": "post"
+      }
+    },
+    {
+      "type": "aws-sam",
+      "request": "direct-invoke",
+      "invokeTarget": {
+        "target": "template",
+        "logicalId": "getDevicesFunction",
+        "templatePath": "${workspaceFolder}/src/api/template.yml"
+      },
+      "lambda": {
+        "payload": {
+          "json": {
+            "AccountID": "90f8d3f0-47d6-499f-b24f-9fe4ae056600"
+          }
+        }
+      },
+      "sam": {
+        "containerBuild": false,
+        "skipNewImageCheck": false
+      },
+      "api": {
+        "path": "/api/devices",
+        "httpMethod": "post"
+      },
+      "name": "api:getDevicesFunction"
+    }
+  ]
+}

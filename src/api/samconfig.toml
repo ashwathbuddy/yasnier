@@ -1,0 +1,29 @@
+# More information about the configuration file can be found here:
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-config.html
+version = 0.1
+
+[default]
+[default.global.parameters]
+stack_name = "ems-api"
+
+[default.build.parameters]
+cached = true
+parallel = true
+container_env_var_file = "env.json"
+
+[default.deploy.parameters]
+s3_bucket = "ems-api-source"
+s3_prefix = "ems-s3-prefix"
+region = "eu-central-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+tags = "project=\"ems\" stage=\"development\""
+
+[default.sync.parameters]
+watch = true
+
+[default.local_start_api.parameters]
+warm_containers = "EAGER"
+
+[default.local_start_lambda.parameters]
+warm_containers = "EAGER"

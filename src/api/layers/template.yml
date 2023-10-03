@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  SAM layer for dynamo db client
+
+# Global:
+#   Function:
+#     Architecture: arm64
+
+
+Resources:
+  DbClientLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: DbClientLayer
+      Description: Some code to share with the other lambda functions
+      ContentUri: ./ddblient
+      CompatibleRuntimes:
+        - nodejs18.x
+      RetentionPolicy: Delete
+
+  ApiResponsesLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: ApiResponsesLayer
+      ContentUri: ./api-responses
+      CompatibleRuntimes:
+        - nodejs18.x
+      RetentionPolicy: Retain
+    Metadata:
+      BuildMethod: makefile
+      BuildArchitecture: arm64
+
+Outputs:
+  DbClientLayerARN:
+    Description: ARN of the Shared Layer
+    Value: !GetAtt DbClientLayer.Arn
+
+

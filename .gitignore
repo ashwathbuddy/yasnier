@@ -1,0 +1,36 @@
+# macOS
+.DS_Store
+
+# Static artifacts
+node_modules/
+assets/node_modules
+
+coverage/
+dist/
+
+# Ignore build folder
+.aws-sam/
+.angular/
+.venv/
+
+# CDK asset staging directory.
+.cdk.staging/
+cdk.out/
+
+# Cloud9 IDE - http://c9.io
+.c9revisions
+.c9
+
+# Python #
+__pycache__/
+*.py[cod]
+*$py.class
+[Bb]ackup*
+
+# Node
+
+# TypeScript cache
+*.tsbuildinfo
+	
+# Optional npm cache directory
+.npm

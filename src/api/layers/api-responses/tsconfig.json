@@ -1,0 +1,14 @@
+{
+    // "extends": "../../../../tsconfig.json",
+    "compilerOptions": {
+        "noEmit": false,
+        "target": "ES2020",
+        "esModuleInterop": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "outDir": "./dist/api-responses",
+        "types": ["node"]
+    },
+    "exclude": ["node_modules", "**/tests/unit/*.test.ts"]
+}

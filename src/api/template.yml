@@ -1,0 +1,230 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  SAM Template for EMS API backend services
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Parameters:
+  DDBEndpoint:
+    Type: String
+    Default: 127.0.0.1:8000
+  Stage:
+    Type: String
+    Default: Dev
+
+Globals:
+  Function:
+    Runtime: nodejs18.x
+    Architectures:
+      - x86_64
+    MemorySize: 128
+    Timeout: 100
+    Environment:
+      Variables:
+        DDBEndpoint: !Ref DDBEndpoint
+    Layers:
+      - !Ref DbClientLayer
+      - !Ref ApiResponsesLayer
+
+Resources:
+  # Each Lambda function is defined by properties:
+  # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+
+  RestApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref Stage
+      # Cors: "'emsys.ectios.com'"
+      Cors:
+        AllowOrigin: "'*'"
+        AllowMethods: "'GET,PUT,POST,OPTIONS,PATCH'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,x-requested-with'"
+        # MaxAge: "'600'"
+      # Auth:
+      #   DefaultAuthorizer: MyCognitoAuthorizer
+      #   Authorizers:
+      #     MyCognitoAuthorizer:
+      #       UserPoolArn:
+      #         Fn::GetAtt: [MyCognitoUserPool, Arn]
+
+  # LAMBDA FUNCTIONS
+
+  LoginFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./functions/account/src/handlers
+      Handler: login.loginHandler
+      Runtime: nodejs18.x
+      Policies:
+        # Give Create/Read/Update/Delete Permissions to the SampleTable
+        - DynamoDBCrudPolicy:
+            TableName: Account
+      Environment:
+        Variables:
+          # Make table name accessible as environment variable from function code during execution
+          TABLE_NAME: Account # !Select [1, !Split ["/", !GetAtt AccountTable.Arn]]
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /api/login
+            Method: POST
+            RestApiId: !Ref RestApi
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        # Format: esm
+        Minify: false
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - login.ts
+        External:
+          - "ddbclient"
+
+  RegisterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./functions/account/src/handlers
+      Handler: register.registerHandler
+      Runtime: nodejs18.x
+      Policies:
+        # Give Create/Read/Update/Delete Permissions to the SampleTable
+        - DynamoDBCrudPolicy:
+            TableName: Account
+      Environment:
+        Variables:
+          # Make table name accessible as environment variable from function code during execution
+          TABLE_NAME: Account # !Select [1, !Split ["/", !GetAtt AccountTable.Arn]]
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /api/register
+            Method: PUT
+            RestApiId: !Ref RestApi
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        # Format: esm
+        Minify: false
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - register.ts
+        External:
+          - "ddbclient"
+
+  DevicesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./functions/devices/src/
+      Handler: app.proxyHandle
+      Policies:
+        # Give Create/Read/Update/Delete Permissions to the Device
+        - DynamoDBCrudPolicy:
+            TableName: Device
+      Environment:
+        Variables:
+          TABLE_NAME: Device # !Ref DeviceTable # !Select [1, !Split ["/", !GetAtt DeviceTable.Arn]]
+      Events:
+        GetAllDevicesEvent:
+          Type: Api
+          Properties:
+            Path: /api/devices/{accountId}
+            Method: GET
+            RestApiId: !Ref RestApi
+        DeleteDeviceEvent:
+          Type: Api
+          Properties:
+            Path: /api/device/{accountId}/{id}
+            Method: DELETE
+            RestApiId: !Ref RestApi
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: false
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - app.ts
+        External:
+          - "ddbclient"
+
+  # DYNAMODB TABLES
+
+  AccountTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Account
+      AttributeDefinitions:
+        - AttributeName: email
+          AttributeType: S
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: email
+          KeyType: HASH
+        - AttributeName: id
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+
+  DeviceTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Device
+      AttributeDefinitions:
+        - AttributeName: accountId
+          AttributeType: S
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: accountId
+          KeyType: HASH
+        - AttributeName: id
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+
+  # API LAYERS
+
+  DbClientLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: DbClientLayer
+      ContentUri: ./layers/ddbclient/
+      CompatibleRuntimes:
+        - nodejs18.x
+    Metadata:
+      BuildMethod: makefile
+      BuildArchitecture: arm64
+
+  ApiResponsesLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: ApiResponsesLayer
+      ContentUri: ./layers/api-responses
+      CompatibleRuntimes:
+        - nodejs18.x
+      RetentionPolicy: Retain
+    Metadata:
+      BuildMethod: makefile
+      BuildArchitecture: arm64
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  EmsApi:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/api/"
+
+  AccountTableName:
+    Description: "The name of the Account table"
+    Value: !Ref AccountTable
+  DeviceTableName:
+    Description: "The name of the Device table"
+    Value: !Ref DeviceTable

@@ -1,0 +1,16 @@
+{
+  "recommendations": [
+    "anweber.vscode-httpyac",
+    "angular.ng-template",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "johnpapa.angular2",
+    "ms-vscode.makefile-tools",
+    "redhat.vscode-yaml",
+    "amazonwebservices.aws-toolkit-vscode",
+    "eamodio.gitlens",
+    "fabiospampinato.vscode-todo-plus"
+    "ibm.output-colorizer"
+  ]
+}
+

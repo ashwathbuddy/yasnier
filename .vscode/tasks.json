@@ -1,0 +1,156 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "sam local invoke (Login)",
+      "type": "shell",
+      "command": "sam build && sam local invoke LoginFunction -e events/valid-login.json --docker-network aws-local --env-vars env.json -d 9999",
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceFolder}/src/api/account/"
+      }
+    },
+    {
+      "label": "docker volume create ems_services_dynamodb_data",
+      "type": "shell",
+      "command": "docker volume create ems_services_dynamodb_data",
+      "problemMatcher": []
+    },
+    {
+      "label": "docker network create aws-local",
+      "type": "shell",
+      "command": "docker network create --driver=bridge --subnet=172.123.0.0/16 --gateway=172.123.0.1 aws-local || true",
+      "problemMatcher": []
+    },
+    {
+      "label": "docker container stop ems_services_dynamodb",
+      "type": "shell",
+      "command": "docker container stop ems_services_dynamodb || true",
+      "problemMatcher": []
+    },
+    {
+      "label": "docker run ems_services_dynamodb",
+      "type": "shell",
+      "command": "docker run --rm -dp 8000:8000 --network aws-local --name ems_services_dynamodb --user root -v ems_services_dynamodb_data:/home/dynamodblocal/data amazon/dynamodb-local -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data/",
+      "problemMatcher": [],
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "docker container stop ems_services_dynamodb"
+      ]
+    },
+    {
+      "label": "docker network rm aws-local",
+      "type": "shell",
+      "command": "docker network rm aws-local || true",
+      "problemMatcher": []
+    },
+    {
+      "label": "docker volume rm ems_services_dynamodb_data",
+      "type": "shell",
+      "command": "docker volume rm ems_services_dynamodb_data",
+      "problemMatcher": []
+    },
+    {
+      "label": "aws dynamodb cleanup",
+      "detail": "Use this task to cleanup DynamoDB. The task will also remove the docker network and volume created for DynamoDB.",
+      "type": "shell",
+      "command": "docker container stop ems_services_dynamodb || true",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "docker container stop ems_services_dynamodb",
+        "docker network rm aws-local",
+        "docker volume rm ems_services_dynamodb_data"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "aws dynamodb setup",
+      "detail": "Use this task to start DynamoDB container and provide the initial data required.",
+      "type": "shell",
+      "command": "npm run setup",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "docker volume create ems_services_dynamodb_data",
+        "docker network create aws-local",
+        "docker run ems_services_dynamodb"
+      ],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceFolder}/libs/data-model"
+      }
+    },
+    {
+      "label": "sam build (api)",
+      "type": "shell",
+      "command": "sam build --cached --parallel --beta-features --skip-pull-image --debug",
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceFolder}/src/api/"
+      }
+    },
+    {
+      "label": "sam local start-api",
+      "detail": "Use this task to execute sam build and start the api. The task also will start the DynamoDB container and place the api and the container in the same network segment.",
+      "type": "shell",
+      "command": "sam local start-api --docker-network aws-local --env-vars env.json --skip-pull-image --debug",
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceFolder}/src/api"
+      },
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "docker run ems_services_dynamodb",
+        "sam build (api)"
+      ]
+    },
+    {
+      "label": "sam local start-api (getDevices)",
+      "detail": "Use this task to execute sam build and start the api. The task also will start the DynamoDB container and place the api and the container in the same network segment.",
+      "type": "shell",
+      "command": "sam local invoke getDevicesFunction --docker-network aws-local --env-vars env.json --skip-pull-image -d 9999",
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceFolder}/src/api"
+      },
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "docker run ems_services_dynamodb",
+        "sam build (api)"
+      ]
+    },
+    {
+      "label": "ng serve (ui/ems)",
+      "detail": "Use this task to execute the frontend app.",
+      "type": "shell",
+      "command": "ng serve --host=127.0.0.1",
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceFolder}/src/ui"
+      }
+    },
+    {
+      "label": "ng serve & open (ui/ems)",
+      "detail": "Use this task to execute the frontend app.",
+      "type": "shell",
+      "command": "ng serve --open --host=127.0.0.1",
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceFolder}/src/ui"
+      }
+    },
+    {
+      "label": "tsc: build data model",
+      "type": "typescript",
+      "tsconfig": "libs/data-model/tsconfig.json",
+      "options": {
+        "cwd": "${workspaceFolder}/libs/data-model"
+      },
+      "problemMatcher": [
+        "$tsc"
+      ],
+      "group": "build"
+    }
+  ]
+}

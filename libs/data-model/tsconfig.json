@@ -1,0 +1,34 @@
+// {
+//   "extends": "../../tsconfig.json",
+//   "compilerOptions": {
+//     "rootDir": "./src",
+//     "outDir": "./dist",
+//     "emitDecoratorMetadata": true,
+//     "experimentalDecorators": true,
+//     "resolveJsonModule": true,
+//     // "noEmit": true,
+//     // "sourceMap": false,
+//     "preserveConstEnums": true
+//   },
+//   "ts-node": {
+//     "esm": true
+//   },
+//   "exclude": ["**/*.test.ts", "**/*.spec.ts"]
+// }
+{
+  "compilerOptions": {
+    "target": "ES2017", // You can adjust the target as needed
+    "module": "ES2022", // Use CommonJS for Node.js or adjust for your environment
+    "moduleResolution": "Node",
+    "outDir": "./dist", // Output directory for compiled files
+    "rootDir": "./src", // Source directory
+    "strict": true, // Enable strict type checking
+    "esModuleInterop": true, // Enable ES module interoperability
+    "skipLibCheck": true, // Skip type checking of declaration files (for libraries)
+    "forceConsistentCasingInFileNames": true, // Ensure consistent file casing
+    "emitDecoratorMetadata": true, // Enable decorator metadata emission
+    "experimentalDecorators": true // Enable experimental decorators
+  },
+  "include": ["src/**/*.ts"], // Specify the files to include for compilation
+  "exclude": ["node_modules"] // Exclude node_modules directory
+}

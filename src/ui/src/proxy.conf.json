@@ -1,0 +1,20 @@
+{
+  "/aws-image/*": {
+    "target": "https://imo4s13oyh.execute-api.eu-central-1.amazonaws.com",
+    "protocol": "https:",
+    "secure": false,
+    "pathRewrite": {
+      "^/aws-image": ""
+    },
+    "changeOrigin": true
+  },
+  "/pvgis/*": {
+    "target": "https://re.jrc.ec.europa.eu/api",
+    "protocol": "https:",
+    "secure": false,
+    "pathRewrite": {
+      "^/pvgis": ""
+    },
+    "changeOrigin": true
+  }
+}
