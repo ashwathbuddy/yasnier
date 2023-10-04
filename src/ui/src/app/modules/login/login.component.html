@@ -1,77 +1,79 @@
 <!-- <img class="w-full" src="../../../../assets/img/logo/big-logo.svg" /> -->
 
-<mat-card>
-  <mat-card-content>
-    <div class="header">
-      <h1 class="primary-text">Sign in</h1>
-      <p>Don't have an account? <a class="inline" [routerLink]="['/sign-up']">Sign up </a></p>
-    </div>
-
-    <div class="error" *ngIf="error">Wrong email or password</div>
-
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit(loginForm.value)">
-      <!-- Email field -->
-      <!-- <mat-form-field class="w-full">
-            <mat-label>Email address</mat-label>
-            <input id="email" matInput [formControlName]="'email'" />
-            <mat-error *ngIf="loginForm.get('email')?.hasError('required')"> Email address is required </mat-error>
-            <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
-                Please enter a valid email address
-            </mat-error>
-        </mat-form-field> -->
-      <mat-form-field class="w-full">
-        <mat-label>Username</mat-label>
-        <input id="username" matInput [formControlName]="'username'" />
-        <mat-error *ngIf="loginForm.get('username')?.hasError('required')"> Username is required </mat-error>
-      </mat-form-field>
-
-      <!-- <mat-form-field>
-        <input type="password" matInput placeholder="Password" formControlName="password" />
-        </mat-form-field> -->
-
-      <!-- Password field -->
-      <mat-form-field class="w-full">
-        <mat-label>Password</mat-label>
-        <input
-          id="password"
-          matInput
-          type="password"
-          [formControlName]="'password'"
-          #passwordField
-          [type]="showPassword ? 'text' : 'password'"
-        />
-        <mat-icon matSuffix (click)="this.showPassword = !this.showPassword">
-          {{ showPassword ? 'visibility_off' : 'visibility' }}
-        </mat-icon>
-        <mat-error> Password is required </mat-error>
-      </mat-form-field>
-
-      <!-- Actions -->
-      <!-- <div class="inline-flex items-end justify-between w-full mt-1.5">
-        <mat-checkbox [color]="'primary'" [formControlName]="'rememberMe'"> Remember me </mat-checkbox>
-        <a class="text-md font-medium text-primary-500 hover:underline" [routerLink]="['/forgot-password']"
-            > Forgot password?
-        </a>
-    </div> -->
-
-      <!-- Submit button -->
-      <!-- <div class="button">
-        <button type="submit" mat-button [disabled]="loginForm.invalid">Login</button>
-        </div> -->
-      <button
-        class="big-button w-full"
-        mat-raised-button
-        [color]="'primary'"
-        [disabled]="loginForm.disabled"
-        (click)="onSubmit(loginForm.value)"
-      >
-        <span *ngIf="!loginForm.disabled"> Sign in </span>
-        <mat-progress-spinner
-          *ngIf="loginForm.disabled"
-          [diameter]="24"
-          [mode]="'indeterminate'"
-        ></mat-progress-spinner>
-      </button>
-    </form>
-  </mat-card-content>
-</mat-card>
+<div class="login">
+  <mat-card>
+    <mat-card-content>
+      <div class="header">
+        <h1 class="primary-text">Sign in</h1>
+        <p>Don't have an account? <a class="inline" [routerLink]="['/sign-up']">Sign up </a></p>
+      </div>
+  
+      <div class="error" *ngIf="error">Wrong email or password</div>
+  
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit(loginForm.value)">
+        <!-- Email field -->
+        <!-- <mat-form-field class="w-full">
+              <mat-label>Email address</mat-label>
+              <input id="email" matInput [formControlName]="'email'" />
+              <mat-error *ngIf="loginForm.get('email')?.hasError('required')"> Email address is required </mat-error>
+              <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
+                  Please enter a valid email address
+              </mat-error>
+          </mat-form-field> -->
+        <mat-form-field class="w-full">
+          <mat-label>Username</mat-label>
+          <input id="username" matInput [formControlName]="'username'" />
+          <mat-error *ngIf="loginForm.get('username')?.hasError('required')"> Username is required </mat-error>
+        </mat-form-field>
+  
+        <!-- <mat-form-field>
+          <input type="password" matInput placeholder="Password" formControlName="password" />
+          </mat-form-field> -->
+  
+        <!-- Password field -->
+        <mat-form-field class="w-full">
+          <mat-label>Password</mat-label>
+          <input
+            id="password"
+            matInput
+            type="password"
+            [formControlName]="'password'"
+            #passwordField
+            [type]="showPassword ? 'text' : 'password'"
+          />
+          <mat-icon matSuffix (click)="this.showPassword = !this.showPassword">
+            {{ showPassword ? 'visibility_off' : 'visibility' }}
+          </mat-icon>
+          <mat-error> Password is required </mat-error>
+        </mat-form-field>
+  
+        <!-- Actions -->
+        <!-- <div class="inline-flex items-end justify-between w-full mt-1.5">
+          <mat-checkbox [color]="'primary'" [formControlName]="'rememberMe'"> Remember me </mat-checkbox>
+          <a class="text-md font-medium text-primary-500 hover:underline" [routerLink]="['/forgot-password']"
+              > Forgot password?
+          </a>
+      </div> -->
+  
+        <!-- Submit button -->
+        <!-- <div class="button">
+          <button type="submit" mat-button [disabled]="loginForm.invalid">Login</button>
+          </div> -->
+        <button
+          class="big-button w-full"
+          mat-raised-button
+          [color]="'primary'"
+          [disabled]="loginForm.disabled"
+          (click)="onSubmit(loginForm.value)"
+        >
+          <span *ngIf="!loginForm.disabled"> Sign in </span>
+          <mat-progress-spinner
+            *ngIf="loginForm.disabled"
+            [diameter]="24"
+            [mode]="'indeterminate'"
+          ></mat-progress-spinner>
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

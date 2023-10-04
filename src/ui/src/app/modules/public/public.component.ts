@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-public',
@@ -8,4 +9,10 @@ import { CommonModule } from '@angular/common';
   templateUrl: './public.component.html',
   styleUrls: ['./public.component.scss'],
 })
-export class PublicComponent {}
+export class PublicComponent {
+  constructor(private router: Router) {}
+
+  redirectToLogin() {
+    this.router.navigate(['/login']);
+  }
+}
