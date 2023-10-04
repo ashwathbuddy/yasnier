@@ -29,9 +29,9 @@ export async function getDevices(event: APIGatewayProxyEvent): Promise<APIGatewa
 
   try {
     const items = await dbClient.query(params);
-    return response.success(200, {}, items);
+    return response.success(items, 200, {});
   } catch (err: unknown) {
     const e = err as Error;
-    return response.error(400, {}, e);
+    return response.error(e as unknown as string, 400, {});
   }
 }

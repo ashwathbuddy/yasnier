@@ -26,9 +26,9 @@ export async function addDevice(event: APIGatewayProxyEvent): Promise<APIGateway
   try {
     const data = await dbClient.put(params);
     const statusCode = data.Attributes ? 200 : 201;
-    return response.success(statusCode, {}, data.Attributes);
+    return response.success(statusCode, 200, data);
   } catch (err: unknown) {
     const e = err as Error;
-    return response.error(400, {}, e);
+    return response.error(e as unknown as string, 400, {});
   }
 }

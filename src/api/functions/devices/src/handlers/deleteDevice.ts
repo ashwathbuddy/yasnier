@@ -28,9 +28,9 @@ export async function deleteDevice(event: APIGatewayProxyEvent): Promise<APIGate
 
   try {
     const items = await dbClient.delete(params);
-    return response.success(200, {}, items.Attributes);
+    return response.success(items.Attributes, 200, {});
   } catch (err: unknown) {
     const e = err as Error;
-    return response.error(400, {}, e);
+    return response.error(e as unknown as string, 400, {});
   }
 }
