@@ -9,7 +9,7 @@
     <tr *ngFor="let device of devices">
       <td>{{ device.model.name }}</td>
       <td>
-        <button (click)="deleteDevice(device.accountId, device.id)">Eliminar</button>
+        <button (click)="deleteDevice(accountId, device.id)">Eliminar</button>
       </td>
     </tr>
   </tbody>

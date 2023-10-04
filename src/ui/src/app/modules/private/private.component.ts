@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { Device } from '../../../../../../libs/data-model/src/models';
 import { PrivateService } from 'src/app/core/private/private.service';
 import { AuthService } from 'src/app/core/auth/auth.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-private',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './private.component.html',
-  styleUrls: ['./private.component.scss'],
 })
 export class PrivateComponent implements OnInit {
   devices: Device[] = [];
@@ -17,15 +16,17 @@ export class PrivateComponent implements OnInit {
 
   constructor(private privateService: PrivateService, private authService: AuthService) {
     this.authService['userSubject'].subscribe((data) => {
-      this.accountId = data?.id as unknown as string;
+      this.accountId = data?.id as string;
     });
   }
 
   ngOnInit(): void {
-    this.privateService.getDevices(this.accountId).subscribe((devices) => {
+    this.privateService.devices$.subscribe((devices) => {
       this.devices = devices;
       console.log('Devices:', this.devices);
     });
+
+    this.privateService.getDevices(this.accountId).subscribe();
   }
 
   deleteDevice(accountId: string, id: string): void {
