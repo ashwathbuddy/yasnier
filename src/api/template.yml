@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: "2010-09-09"
+AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
   SAM Template for EMS API backend services
@@ -37,7 +37,7 @@ Resources:
       # Cors: "'emsys.ectios.com'"
       Cors:
         AllowOrigin: "'*'"
-        AllowMethods: "'GET,PUT,POST,OPTIONS,PATCH'"
+        AllowMethods: "'GET,PUT,POST,OPTIONS,PATCH, DELETE'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,x-requested-with'"
         # MaxAge: "'600'"
       # Auth:
@@ -75,12 +75,12 @@ Resources:
       BuildProperties:
         # Format: esm
         Minify: false
-        Target: "es2020"
+        Target: 'es2020'
         Sourcemap: true
         EntryPoints:
           - login.ts
         External:
-          - "ddbclient"
+          - 'ddbclient'
 
   RegisterFunction:
     Type: AWS::Serverless::Function
@@ -108,12 +108,12 @@ Resources:
       BuildProperties:
         # Format: esm
         Minify: false
-        Target: "es2020"
+        Target: 'es2020'
         Sourcemap: true
         EntryPoints:
           - register.ts
         External:
-          - "ddbclient"
+          - 'ddbclient'
 
   DevicesFunction:
     Type: AWS::Serverless::Function
@@ -137,19 +137,19 @@ Resources:
         DeleteDeviceEvent:
           Type: Api
           Properties:
-            Path: /api/device/{accountId}/{id}
+            Path: /api/devices/{accountId}/{id}
             Method: DELETE
             RestApiId: !Ref RestApi
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
         Minify: false
-        Target: "es2020"
+        Target: 'es2020'
         Sourcemap: true
         EntryPoints:
           - app.ts
         External:
-          - "ddbclient"
+          - 'ddbclient'
 
   # DYNAMODB TABLES
 
@@ -219,12 +219,12 @@ Outputs:
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   EmsApi:
-    Description: "API Gateway endpoint URL for Prod stage"
-    Value: !Sub "https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/api/"
+    Description: 'API Gateway endpoint URL for Prod stage'
+    Value: !Sub 'https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/api/'
 
   AccountTableName:
-    Description: "The name of the Account table"
+    Description: 'The name of the Account table'
     Value: !Ref AccountTable
   DeviceTableName:
-    Description: "The name of the Device table"
+    Description: 'The name of the Device table'
     Value: !Ref DeviceTable

@@ -9,7 +9,7 @@ export async function proxyHandle(event: APIGatewayProxyEvent): Promise<APIGatew
   switch (`${event.httpMethod} ${event.resource}`) {
     case 'GET /api/devices/{accountId}':
       return getDevices(event);
-    case 'DELETE /api/device/{accountId}/{id}':
+    case 'DELETE /api/devices/{accountId}/{id}':
       return deleteDevice(event);
     default:
       throw new Error(`invalid route key for ${JSON.stringify(event, null, 2)}, you tried: ${event.path}`);

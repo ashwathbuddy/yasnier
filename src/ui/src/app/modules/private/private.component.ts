@@ -28,8 +28,7 @@ export class PrivateComponent implements OnInit {
     });
   }
 
-  // deleteDevice(deviceId: string): void {
-  // Aquí puedes implementar la lógica para eliminar el dispositivo por su ID
-  // Puedes utilizar el servicio DeviceService para realizar la solicitud DELETE a la API
-  // }
+  deleteDevice(accountId: string, id: string): void {
+    this.privateService.deleteDevice(accountId, id).subscribe();
+  }
 }
