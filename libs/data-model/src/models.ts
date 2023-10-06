@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Model, HashKey, RangeKey } from './utils/marshal';
+import { HashKey, Model, RangeKey } from './utils/marshal';
 
 @Model()
 export class Account {
@@ -27,39 +27,6 @@ export class Account {
     this.password = args.password;
     this.id = args.id || uuidv4();
     this.createdAt = args.createdAt || new Date().toLocaleDateString();
-  }
-}
-
-@Model()
-export class DeviceModel {
-  @HashKey('S')
-  name!: string;
-  image?: string;
-  level?: string;
-  power!: number[];
-  capacity?: number;
-  protocol?: string;
-  connection?: string[];
-  deviceType?: string;
-
-  constructor(args: {
-    name: string;
-    image: string;
-    level?: string;
-    power: number[];
-    capacity?: number;
-    protocol?: string;
-    connection?: string[];
-    deviceType?: string;
-  }) {
-    this.name = args.name;
-    this.image = args.image;
-    this.level = args.level;
-    this.power = args.power;
-    this.capacity = args.capacity;
-    this.protocol = args.protocol;
-    this.connection = args.connection;
-    this.deviceType = args.deviceType;
   }
 }
 

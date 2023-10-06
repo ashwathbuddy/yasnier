@@ -1,3 +1,10 @@
+export interface IResponse<T> {
+  data: T;
+  code: string;
+  error: string;
+}
+
+// TODO: for implementing authorization
 export interface AuthResponse {
   uuid?: string;
   valid: boolean;
@@ -7,10 +14,4 @@ export interface AuthResponse {
   token?: string;
   message?: string;
   status?: number;
-}
-
-export interface IResponse<T> {
-  data: T;
-  code: string;
-  error: string;
 }
